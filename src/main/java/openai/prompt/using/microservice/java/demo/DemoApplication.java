@@ -13,17 +13,27 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class DemoApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
 
-	@Bean
-	ImageModel imageModel() {
-		return new OpenAiImageModel(new OpenAiImageApi(System.getenv("OPENAI_API_KEY")));
-	}
+    @Bean
+    ImageModel imageModel() {
+        return new OpenAiImageModel(new OpenAiImageApi(System.getenv("OPENAI_API_KEY"))); // Update this line to use Google Gemini API credentials
+    }
 
-	@Bean
-	ChatModel chatModel() {
-		return new OpenAiChatModel(new OpenAiApi(System.getenv("OPENAI_API_KEY")));
-	}
+    @Bean
+    ChatModel chatModel() {
+        return new OpenAiChatModel(new OpenAiApi(System.getenv("OPENAI_API_KEY"))); // Update this line to use Google Gemini API credentials
+    }
+
+    @Bean
+    ImageModel googleGeminiImageModel() {
+        return new OpenAiImageModel(new OpenAiImageApi("GOOGLE_GEMINI_API_KEY"));
+    }
+
+    @Bean
+    ChatModel googleGeminiChatModel() {
+        return new OpenAiChatModel(new OpenAiApi("GOOGLE_GEMINI_API_KEY"));
+    }
 }
