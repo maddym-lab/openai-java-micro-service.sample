@@ -3,13 +3,10 @@ package openai.prompt.using.microservice.java.demo.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.cloud.vertexai.Model;
-import com.google.cloud.vertexai.ChatMessage;
-
 public class ChatRequestRestCall {
 
     private String model;
-    private List<ChatMessage> messages;
+    private List<MessageRestCall> messages;
 
     public String getModel() {
         return model;
@@ -19,11 +16,11 @@ public class ChatRequestRestCall {
         this.model = model;
     }
 
-    public List<ChatMessage> getMessages() {
+    public List<MessageRestCall> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<ChatMessage> messages) {
+    public void setMessages(List<MessageRestCall> messages) {
         this.messages = messages;
     }
 
@@ -31,7 +28,8 @@ public class ChatRequestRestCall {
         this.model = model;
 
         this.messages = new ArrayList<>();
-        this.messages.add(new ChatMessage("user", prompt));
+        this.messages.add(new MessageRestCall("user", prompt));
     }
+
 
 }
