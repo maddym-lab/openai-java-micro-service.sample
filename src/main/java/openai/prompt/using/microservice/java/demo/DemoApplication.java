@@ -9,6 +9,12 @@ import org.springframework.ai.openai.api.OpenAiImageApi;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.validation.annotation.Validated;
+
+import com.google.cloud.vertexai.Model;
+import com.google.cloud.vertexai.ChatMessage;
+
+import java.util.Properties;
 
 @SpringBootApplication
 public class DemoApplication {
@@ -18,22 +24,48 @@ public class DemoApplication {
     }
 
     @Bean
+    @Validated
     ImageModel imageModel() {
-        return new OpenAiImageModel(new OpenAiImageApi(System.getenv("OPENAI_API_KEY"))); // Update this line to use Google Gemini API credentials
+        return new OpenAiImageModel(new OpenAiImageApi(System.getenv("OPENAI_API_KEY")));
     }
 
     @Bean
+    @Validated
     ChatModel chatModel() {
-        return new OpenAiChatModel(new OpenAiApi(System.getenv("OPENAI_API_KEY"))); // Update this line to use Google Gemini API credentials
+        return new OpenAiChatModel(new OpenAiApi(System.getenv("OPENAI_API_KEY")));
     }
 
     @Bean
+    @Validated
     ImageModel googleGeminiImageModel() {
-        return new OpenAiImageModel(new OpenAiImageApi("GOOGLE_GEMINI_API_KEY"));
+        Properties properties = new Properties();
+        properties.put("GOOGLE_CLOUD_PROJECT", System.getenv("GOOGLE_CLOUD_PROJECT"));
+        properties.put("GOOGLE_APPLICATION_CREDENTIALS", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        return ModelServiceFactory.getVertexAiImageModel(properties);
     }
 
     @Bean
+    @Validated
     ChatModel googleGeminiChatModel() {
-        return new OpenAiChatModel(new OpenAiApi("GOOGLE_GEMINI_API_KEY"));
+        Properties properties = new Properties();
+        properties.put("GOOGLE_CLOUD_PROJECT", System.getenv("GOOGLE_CLOUD_PROJECT"));
+        properties.put("GOOGLE_APPLICATION_CREDENTIALS", System.getenv("GOOGLE_APPLICATION_CREDENTIALS"));
+        return ModelServiceFactory.getVertexAiChatModel(properties);
     }
+
+    @Bean
+    VertexAiGeminiChatModel vertexAiGeminiChatModel() {
+        return new VertexAiGeminiChatModel(new VertexAiGeminiApi(System.getenv("GOOGLE_GEMINI_API_KEY")));
+    }
+
+    @Bean
+    AppConfig appConfig() {
+        return new AppConfig(vertexAiGeminiChatModel());
+    }
+
+    public DemoApplication(VertexAiGeminiChatModel vertexAiGeminiChatModel) {
+        this.vertexAiGeminiChatModel = vertexAiGeminiChatModel;
+    }
+
+    private final VertexAiGeminiChatModel vertexAiGeminiChatModel;
 }
